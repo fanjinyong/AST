@@ -34,6 +34,7 @@ statement
 declaration
 : T IDENTIFIER LOP_ASSIGN expr{  // declare and init
     TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
+    $2->int_val=$4->int_val;
     node->stype = STMT_DECL;
     node->addChild($1);
     node->addChild($2);
@@ -68,6 +69,7 @@ expr
 T: T_INT {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_INT;} 
 | T_CHAR {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_CHAR;}
 | T_BOOL {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_BOOL;}
+| T_STRING {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_STRING;}
 ;
 
 %%

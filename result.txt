@@ -1,17 +1,13 @@
-  0  0        program  children:    1   5   9  13
+  0  0        program  children:    1   5   9
   1  2      statement  children:    2   3   4
   2  2           type
-  3  2       variable   scope: 1
+  3  2       variable   scope: 1    a    2
   4  2          const
-  5  4      statement  children:    6   7   8
-  6  4           type
-  7  4       variable   scope: 2
-  8  4          const
-  9  5      statement  children:   10  11  12
- 10  5           type
- 11  5       variable   scope: 2
- 12  5          const
- 13  7      statement  children:   14  15  16
- 14  7           type
- 15  7       variable   scope: 3
- 16  7          const
+  5  5      statement  children:    6   7   8
+  6  5           type
+  7  5       variable   scope: 2    b   -8
+  8  5          const
+  9  6      statement  children:   10  11  12
+ 10  6           type
+ 11  6       variable   scope: 2    c   16
+ 12  6          const

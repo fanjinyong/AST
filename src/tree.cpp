@@ -45,8 +45,12 @@ void TreeNode::genNodeId() {
 
 void TreeNode::printNodeInfo() {
     cout<<setw(15)<<TreeNode::nodeType2String(this->nodeType);
-    if(this->scope!=-1)
-	cout<<setw(10)<<"scope: "<<this->scope;
+	
+	if(this->scope!=-1){
+		cout<<setw(10)<<"scope: "<<this->scope;
+		cout<<setw(5)<<this->var_name;
+		cout<<setw(5)<<this->int_val;
+	}
 }
 
 void TreeNode::printChildrenId() {

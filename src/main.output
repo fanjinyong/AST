@@ -1,6 +1,5 @@
 Terminals unused in grammar
 
-   T_STRING
    BOOL
    LOP_EQ
 
@@ -28,6 +27,7 @@ Grammar
    12 T: T_INT
    13  | T_CHAR
    14  | T_BOOL
+   15  | T_STRING
 
 
 Terminals, with rules where they appear
@@ -36,7 +36,7 @@ $end (0) 0
 error (256)
 T_CHAR (258) 13
 T_INT (259) 12
-T_STRING (260)
+T_STRING (260) 15
 T_BOOL (261) 14
 LOP_ASSIGN (262) 6
 SEMICOLON (263) 4 5
@@ -63,7 +63,7 @@ declaration (19)
 expr (20)
     on left: 8 9 10 11, on right: 6
 T (21)
-    on left: 12 13 14, on right: 6 7
+    on left: 12 13 14 15, on right: 6 7
 
 
 State 0
@@ -72,14 +72,15 @@ State 0
 
     T_CHAR     shift, and go to state 1
     T_INT      shift, and go to state 2
-    T_BOOL     shift, and go to state 3
-    SEMICOLON  shift, and go to state 4
+    T_STRING   shift, and go to state 3
+    T_BOOL     shift, and go to state 4
+    SEMICOLON  shift, and go to state 5
 
-    program      go to state 5
-    statements   go to state 6
-    statement    go to state 7
-    declaration  go to state 8
-    T            go to state 9
+    program      go to state 6
+    statements   go to state 7
+    statement    go to state 8
+    declaration  go to state 9
+    T            go to state 10
 
 
 State 1
@@ -98,136 +99,144 @@ State 2
 
 State 3
 
+   15 T: T_STRING .
+
+    $default  reduce using rule 15 (T)
+
+
+State 4
+
    14 T: T_BOOL .
 
     $default  reduce using rule 14 (T)
 
 
-State 4
+State 5
 
     4 statement: SEMICOLON .
 
     $default  reduce using rule 4 (statement)
 
 
-State 5
+State 6
 
     0 $accept: program . $end
 
-    $end  shift, and go to state 10
+    $end  shift, and go to state 11
 
 
-State 6
+State 7
 
     1 program: statements .
     3 statements: statements . statement
 
     T_CHAR     shift, and go to state 1
     T_INT      shift, and go to state 2
-    T_BOOL     shift, and go to state 3
-    SEMICOLON  shift, and go to state 4
+    T_STRING   shift, and go to state 3
+    T_BOOL     shift, and go to state 4
+    SEMICOLON  shift, and go to state 5
 
     $default  reduce using rule 1 (program)
 
-    statement    go to state 11
-    declaration  go to state 8
-    T            go to state 9
+    statement    go to state 12
+    declaration  go to state 9
+    T            go to state 10
 
 
-State 7
+State 8
 
     2 statements: statement .
 
     $default  reduce using rule 2 (statements)
 
 
-State 8
+State 9
 
     5 statement: declaration . SEMICOLON
 
-    SEMICOLON  shift, and go to state 12
+    SEMICOLON  shift, and go to state 13
 
 
-State 9
+State 10
 
     6 declaration: T . IDENTIFIER LOP_ASSIGN expr
     7            | T . IDENTIFIER
 
-    IDENTIFIER  shift, and go to state 13
+    IDENTIFIER  shift, and go to state 14
 
 
-State 10
+State 11
 
     0 $accept: program $end .
 
     $default  accept
 
 
-State 11
+State 12
 
     3 statements: statements statement .
 
     $default  reduce using rule 3 (statements)
 
 
-State 12
+State 13
 
     5 statement: declaration SEMICOLON .
 
     $default  reduce using rule 5 (statement)
 
 
-State 13
+State 14
 
     6 declaration: T IDENTIFIER . LOP_ASSIGN expr
     7            | T IDENTIFIER .
 
-    LOP_ASSIGN  shift, and go to state 14
+    LOP_ASSIGN  shift, and go to state 15
 
     $default  reduce using rule 7 (declaration)
 
 
-State 14
+State 15
 
     6 declaration: T IDENTIFIER LOP_ASSIGN . expr
 
-    IDENTIFIER  shift, and go to state 15
-    INTEGER     shift, and go to state 16
-    CHAR        shift, and go to state 17
-    STRING      shift, and go to state 18
+    IDENTIFIER  shift, and go to state 16
+    INTEGER     shift, and go to state 17
+    CHAR        shift, and go to state 18
+    STRING      shift, and go to state 19
 
-    expr  go to state 19
+    expr  go to state 20
 
 
-State 15
+State 16
 
     8 expr: IDENTIFIER .
 
     $default  reduce using rule 8 (expr)
 
 
-State 16
+State 17
 
     9 expr: INTEGER .
 
     $default  reduce using rule 9 (expr)
 
 
-State 17
+State 18
 
    10 expr: CHAR .
 
     $default  reduce using rule 10 (expr)
 
 
-State 18
+State 19
 
    11 expr: STRING .
 
     $default  reduce using rule 11 (expr)
 
 
-State 19
+State 20
 
     6 declaration: T IDENTIFIER LOP_ASSIGN expr .
 
