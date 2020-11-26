@@ -1,13 +1,6 @@
-  0  0        program  children:    1   5   9
-  1  2      statement  children:    2   3   4
-  2  2           type
-  3  2       variable   scope: 1    a    2
-  4  2          const
-  5  5      statement  children:    6   7   8
-  6  5           type
-  7  5       variable   scope: 2    b   -8
-  8  5          const
-  9  6      statement  children:   10  11  12
- 10  6           type
- 11  6       variable   scope: 2    c   16
- 12  6          const
+  0  0  program   children: 1
+  1  1  stmt_decl_val   children: 2 3
+  2  1  type_char
+  3  1  assign_ass   children: 4 5
+  4  1  variable    scope:0   name:c   type:char   value:'s'
+  5  1  const   type:char   value:'s'

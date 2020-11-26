@@ -10,23 +10,14 @@ enum NodeType
     NODE_VAR,
     NODE_EXPR,
     NODE_TYPE,
-
     NODE_STMT,
     NODE_PROG,
-
-	NODE_KEYWORD,
+    NODE_BLOCK,
+    NODE_OP,
+    NODE_ASSIGN,
+    NODE_COND,
 };
 
-enum OperatorType
-{
-	OP_EQ,  // ==
-};
-
-enum StmtType {
-    STMT_SKIP,
-    STMT_DECL,
-}
-;
 struct TreeNode {
 public:
     int nodeID;  // 用于作业的序号输出
@@ -48,20 +39,18 @@ public:
     void genNodeId();
 
 public:
-    OperatorType optype;  // 如果是表达式
     Type* type;  // 变量、类型、表达式结点，有类型。
-    StmtType stype;
+
     int int_val;
     char ch_val;
-    bool b_val;
+    //bool b_val;
     string str_val;
+
     string var_name;
     int scope=-1;
+    string sp="?";
 public:
     static string nodeType2String (NodeType type);
-    static string opType2String (OperatorType type);
-    static string sType2String (StmtType type);
-
 public:
     TreeNode(int lineno, NodeType type);
 };
@@ -91,15 +80,14 @@ public:
 		NodeScope* temp=this;
 		do{
 			if(temp->m.count(val)){
-				temp->m.insert(pair<string,int>(val,temp->m[val]));
-				return;			
+			this->m.insert(pair<string,int>(val,temp->m[val]));
+			return;			
 			}
 		}while(temp->parent!=nullptr);
+		if(this->m.count(val)==0)
+			this->m.insert(pair<string,int>(val,this->scope));
 	}
 
-	void addDel(string val){
-		this->m.insert(pair<string,int>(val,this->scope));
-	}
 
 	int findScope(string val){
 		return this->m[val];

@@ -44,21 +44,34 @@ void TreeNode::genNodeId() {
 }
 
 void TreeNode::printNodeInfo() {
-    cout<<setw(15)<<TreeNode::nodeType2String(this->nodeType);
+    cout<<"  "<<TreeNode::nodeType2String(this->nodeType);
 	
 	if(this->scope!=-1){
-		cout<<setw(10)<<"scope: "<<this->scope;
-		cout<<setw(5)<<this->var_name;
-		cout<<setw(5)<<this->int_val;
+		cout<<setw(10)<<"scope:"<<this->scope;
+		cout<<"   name:"<<this->var_name;
+		if(this->type->type==TYPE_INT->type)
+		cout<<"   type:int"<<"   value:"<<this->int_val;
+		if(this->type->type==TYPE_CHAR->type)
+		cout<<"   type:char"<<"   value:'"<<this->ch_val<<"'";
+		if(this->type->type==TYPE_STRING->type)
+		cout<<"   type:string"<<"   value:\""<<this->str_val<<"\"";
+	}
+	if(this->nodeType==NODE_CONST){
+		if(this->type->type==TYPE_INT->type)
+		cout<<"   type:int"<<"   value:"<<this->int_val;
+		if(this->type->type==TYPE_CHAR->type)
+		cout<<"   type:char"<<"   value:'"<<this->ch_val<<"'";
+		if(this->type->type==TYPE_STRING->type)
+		cout<<"   type:string"<<"   value:\""<<this->str_val<<"\"";
 	}
 }
 
 void TreeNode::printChildrenId() {
 	if(this->child!=nullptr){
-        	cout<<"  "<<"children: ";
+        	cout<<"   "<<"children:";
         	TreeNode* children=this->child;
      		while(children!=nullptr){
-            		cout<<setw(4)<<children->nodeID;
+            		cout<<" "<<children->nodeID;
             		children=children->sibling;
         	}
     	}
@@ -66,8 +79,9 @@ void TreeNode::printChildrenId() {
 
 void TreeNode::printAST() {
 	cout<<setw(3)<<this->nodeID;
-	cout<<setw(3)<<this->lineno;
+	cout<<setw(3)<<this->lineno;	
 	TreeNode::printNodeInfo();
+	TreeNode::printSpecialInfo();
 	TreeNode::printChildrenId();
 	cout<<endl;
 
@@ -82,28 +96,8 @@ void TreeNode::printAST() {
 
 // You can output more info...
 void TreeNode::printSpecialInfo() {
-    switch(this->nodeType){
-        case NODE_CONST:
-            break;
-        case NODE_VAR:
-            break;
-        case NODE_EXPR:
-            break;
-        case NODE_STMT:
-            break;
-        case NODE_TYPE:
-            break;
-        default:
-            break;
-    }
-}
-
-string TreeNode::sType2String(StmtType type) {
-	switch(type){
-        	case(STMT_SKIP):return "const";
-        	case(STMT_DECL):return "variable";
-        	default:return"?";
-    	}
+	if(this->sp!="?")
+		cout<<"_"<<this->sp;
 }
 
 
@@ -113,9 +107,10 @@ string TreeNode::nodeType2String (NodeType type){
         case(NODE_VAR):return "variable";
         case(NODE_EXPR):return "expression";
         case(NODE_TYPE):return "type";
-        case(NODE_STMT):return "statement";
+        case(NODE_STMT):return "stmt";
         case(NODE_PROG):return "program";
-	case(NODE_KEYWORD):return "key";
+	case(NODE_ASSIGN):return "assign";
+	case(NODE_COND):return "condition";
         default:return"?";
     }
 }

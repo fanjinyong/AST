@@ -1,243 +1,1269 @@
 Terminals unused in grammar
 
-   BOOL
-   LOP_EQ
+   ADDADD
+   SUBSUB
+   POINT
+   BREAK
+   RETURN
+   CONTINUE
+   IF
+   ELSE
+   FOR
 
 
 Grammar
 
     0 $accept: program $end
 
-    1 program: statements
+    1 program: stmts
 
-    2 statements: statement
-    3           | statements statement
+    2 stmts: stmt
+    3      | stmts stmt
 
-    4 statement: SEMICOLON
-    5          | declaration SEMICOLON
+    4 stmt: SEMICOLON
+    5     | decl SEMICOLON
+    6     | assign SEMICOLON
+    7     | block
+    8     | WHILE LBRACKET cond RBRACKET stmt
 
-    6 declaration: T IDENTIFIER LOP_ASSIGN expr
-    7            | T IDENTIFIER
+    9 block: LBRACE stmts RBRACE
 
-    8 expr: IDENTIFIER
-    9     | INTEGER
-   10     | CHAR
-   11     | STRING
+   10 decl: type assigns
+   11     | CONST type assigns
 
-   12 T: T_INT
-   13  | T_CHAR
-   14  | T_BOOL
-   15  | T_STRING
+   12 assigns: assigns COMMA assign
+   13        | assigns COMMA ID
+   14        | assign
+   15        | ID
+
+   16 assign: ID ASS expr
+   17       | ID ADDASS expr
+   18       | ID SUBASS expr
+   19       | ID MULASS expr
+   20       | ID DIVASS expr
+   21       | ID REMASS expr
+
+   22 expr: ID
+   23     | INTEGER
+   24     | VCHAR
+   25     | VSTRING
+   26     | expr A_ADD expr
+   27     | expr A_SUB expr
+   28     | expr A_MUL expr
+   29     | expr A_DIV expr
+   30     | expr A_REM expr
+   31     | LBRACKET expr RBRACKET
+
+   32 cond: L_NO condition
+   33     | LBRACKET condition RBRACKET
+   34     | condition L_AND condition
+   35     | condition L_OR condition
+
+   36 condition: expr R_GT expr
+   37          | expr R_GE expr
+   38          | expr R_LT expr
+   39          | expr R_LE expr
+   40          | expr R_EE expr
+   41          | expr R_NE expr
+
+   42 type: INT
+   43     | CHAR
+   44     | BOOL
+   45     | STRING
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-T_CHAR (258) 13
-T_INT (259) 12
-T_STRING (260) 15
-T_BOOL (261) 14
-LOP_ASSIGN (262) 6
-SEMICOLON (263) 4 5
-IDENTIFIER (264) 6 7 8
-INTEGER (265) 9
-CHAR (266) 10
-BOOL (267)
-STRING (268) 11
-LOP_EQ (269)
+ID (258) 13 15 16 17 18 19 20 21 22
+CHAR (259) 43
+INT (260) 42
+BOOL (261) 44
+STRING (262) 45
+INTEGER (263) 23
+VCHAR (264) 24
+VSTRING (265) 25
+COMMA (266) 12 13
+SEMICOLON (267) 4 5 6
+LBRACE (268) 9
+RBRACE (269) 9
+ASS (270) 16
+ADDASS (271) 17
+SUBASS (272) 18
+MULASS (273) 19
+DIVASS (274) 20
+REMASS (275) 21
+L_OR (276) 35
+L_AND (277) 34
+R_EE (278) 40
+R_NE (279) 41
+R_GT (280) 36
+R_GE (281) 37
+R_LT (282) 38
+R_LE (283) 39
+A_ADD (284) 26
+A_SUB (285) 27
+A_MUL (286) 28
+A_DIV (287) 29
+A_REM (288) 30
+ADDADD (289)
+SUBSUB (290)
+L_NO (291) 32
+LBRACKET (292) 8 31 33
+RBRACKET (293) 8 31 33
+POINT (294)
+WHILE (295) 8
+BREAK (296)
+RETURN (297)
+CONTINUE (298)
+IF (299)
+ELSE (300)
+FOR (301)
+CONST (302) 11
 
 
 Nonterminals, with rules where they appear
 
-$accept (15)
+$accept (48)
     on left: 0
-program (16)
+program (49)
     on left: 1, on right: 0
-statements (17)
-    on left: 2 3, on right: 1 3
-statement (18)
-    on left: 4 5, on right: 2 3
-declaration (19)
-    on left: 6 7, on right: 5
-expr (20)
-    on left: 8 9 10 11, on right: 6
-T (21)
-    on left: 12 13 14 15, on right: 6 7
+stmts (50)
+    on left: 2 3, on right: 1 3 9
+stmt (51)
+    on left: 4 5 6 7 8, on right: 2 3 8
+block (52)
+    on left: 9, on right: 7
+decl (53)
+    on left: 10 11, on right: 5
+assigns (54)
+    on left: 12 13 14 15, on right: 10 11 12 13
+assign (55)
+    on left: 16 17 18 19 20 21, on right: 6 12 14
+expr (56)
+    on left: 22 23 24 25 26 27 28 29 30 31, on right: 16 17 18 19 20
+    21 26 27 28 29 30 31 36 37 38 39 40 41
+cond (57)
+    on left: 32 33 34 35, on right: 8
+condition (58)
+    on left: 36 37 38 39 40 41, on right: 32 33 34 35
+type (59)
+    on left: 42 43 44 45, on right: 10 11
 
 
 State 0
 
     0 $accept: . program $end
 
-    T_CHAR     shift, and go to state 1
-    T_INT      shift, and go to state 2
-    T_STRING   shift, and go to state 3
-    T_BOOL     shift, and go to state 4
-    SEMICOLON  shift, and go to state 5
+    ID         shift, and go to state 1
+    CHAR       shift, and go to state 2
+    INT        shift, and go to state 3
+    BOOL       shift, and go to state 4
+    STRING     shift, and go to state 5
+    SEMICOLON  shift, and go to state 6
+    LBRACE     shift, and go to state 7
+    WHILE      shift, and go to state 8
+    CONST      shift, and go to state 9
 
-    program      go to state 6
-    statements   go to state 7
-    statement    go to state 8
-    declaration  go to state 9
-    T            go to state 10
+    program  go to state 10
+    stmts    go to state 11
+    stmt     go to state 12
+    block    go to state 13
+    decl     go to state 14
+    assign   go to state 15
+    type     go to state 16
 
 
 State 1
 
-   13 T: T_CHAR .
+   16 assign: ID . ASS expr
+   17       | ID . ADDASS expr
+   18       | ID . SUBASS expr
+   19       | ID . MULASS expr
+   20       | ID . DIVASS expr
+   21       | ID . REMASS expr
 
-    $default  reduce using rule 13 (T)
+    ASS     shift, and go to state 17
+    ADDASS  shift, and go to state 18
+    SUBASS  shift, and go to state 19
+    MULASS  shift, and go to state 20
+    DIVASS  shift, and go to state 21
+    REMASS  shift, and go to state 22
 
 
 State 2
 
-   12 T: T_INT .
+   43 type: CHAR .
 
-    $default  reduce using rule 12 (T)
+    $default  reduce using rule 43 (type)
 
 
 State 3
 
-   15 T: T_STRING .
+   42 type: INT .
 
-    $default  reduce using rule 15 (T)
+    $default  reduce using rule 42 (type)
 
 
 State 4
 
-   14 T: T_BOOL .
+   44 type: BOOL .
 
-    $default  reduce using rule 14 (T)
+    $default  reduce using rule 44 (type)
 
 
 State 5
 
-    4 statement: SEMICOLON .
+   45 type: STRING .
 
-    $default  reduce using rule 4 (statement)
+    $default  reduce using rule 45 (type)
 
 
 State 6
 
-    0 $accept: program . $end
+    4 stmt: SEMICOLON .
 
-    $end  shift, and go to state 11
+    $default  reduce using rule 4 (stmt)
 
 
 State 7
 
-    1 program: statements .
-    3 statements: statements . statement
+    9 block: LBRACE . stmts RBRACE
 
-    T_CHAR     shift, and go to state 1
-    T_INT      shift, and go to state 2
-    T_STRING   shift, and go to state 3
-    T_BOOL     shift, and go to state 4
-    SEMICOLON  shift, and go to state 5
+    ID         shift, and go to state 1
+    CHAR       shift, and go to state 2
+    INT        shift, and go to state 3
+    BOOL       shift, and go to state 4
+    STRING     shift, and go to state 5
+    SEMICOLON  shift, and go to state 6
+    LBRACE     shift, and go to state 7
+    WHILE      shift, and go to state 8
+    CONST      shift, and go to state 9
 
-    $default  reduce using rule 1 (program)
-
-    statement    go to state 12
-    declaration  go to state 9
-    T            go to state 10
+    stmts   go to state 23
+    stmt    go to state 12
+    block   go to state 13
+    decl    go to state 14
+    assign  go to state 15
+    type    go to state 16
 
 
 State 8
 
-    2 statements: statement .
+    8 stmt: WHILE . LBRACKET cond RBRACKET stmt
 
-    $default  reduce using rule 2 (statements)
+    LBRACKET  shift, and go to state 24
 
 
 State 9
 
-    5 statement: declaration . SEMICOLON
+   11 decl: CONST . type assigns
 
-    SEMICOLON  shift, and go to state 13
+    CHAR    shift, and go to state 2
+    INT     shift, and go to state 3
+    BOOL    shift, and go to state 4
+    STRING  shift, and go to state 5
+
+    type  go to state 25
 
 
 State 10
 
-    6 declaration: T . IDENTIFIER LOP_ASSIGN expr
-    7            | T . IDENTIFIER
+    0 $accept: program . $end
 
-    IDENTIFIER  shift, and go to state 14
+    $end  shift, and go to state 26
 
 
 State 11
+
+    1 program: stmts .
+    3 stmts: stmts . stmt
+
+    ID         shift, and go to state 1
+    CHAR       shift, and go to state 2
+    INT        shift, and go to state 3
+    BOOL       shift, and go to state 4
+    STRING     shift, and go to state 5
+    SEMICOLON  shift, and go to state 6
+    LBRACE     shift, and go to state 7
+    WHILE      shift, and go to state 8
+    CONST      shift, and go to state 9
+
+    $default  reduce using rule 1 (program)
+
+    stmt    go to state 27
+    block   go to state 13
+    decl    go to state 14
+    assign  go to state 15
+    type    go to state 16
+
+
+State 12
+
+    2 stmts: stmt .
+
+    $default  reduce using rule 2 (stmts)
+
+
+State 13
+
+    7 stmt: block .
+
+    $default  reduce using rule 7 (stmt)
+
+
+State 14
+
+    5 stmt: decl . SEMICOLON
+
+    SEMICOLON  shift, and go to state 28
+
+
+State 15
+
+    6 stmt: assign . SEMICOLON
+
+    SEMICOLON  shift, and go to state 29
+
+
+State 16
+
+   10 decl: type . assigns
+
+    ID  shift, and go to state 30
+
+    assigns  go to state 31
+    assign   go to state 32
+
+
+State 17
+
+   16 assign: ID ASS . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 38
+
+
+State 18
+
+   17 assign: ID ADDASS . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 39
+
+
+State 19
+
+   18 assign: ID SUBASS . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 40
+
+
+State 20
+
+   19 assign: ID MULASS . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 41
+
+
+State 21
+
+   20 assign: ID DIVASS . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 42
+
+
+State 22
+
+   21 assign: ID REMASS . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 43
+
+
+State 23
+
+    3 stmts: stmts . stmt
+    9 block: LBRACE stmts . RBRACE
+
+    ID         shift, and go to state 1
+    CHAR       shift, and go to state 2
+    INT        shift, and go to state 3
+    BOOL       shift, and go to state 4
+    STRING     shift, and go to state 5
+    SEMICOLON  shift, and go to state 6
+    LBRACE     shift, and go to state 7
+    RBRACE     shift, and go to state 44
+    WHILE      shift, and go to state 8
+    CONST      shift, and go to state 9
+
+    stmt    go to state 27
+    block   go to state 13
+    decl    go to state 14
+    assign  go to state 15
+    type    go to state 16
+
+
+State 24
+
+    8 stmt: WHILE LBRACKET . cond RBRACKET stmt
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    L_NO      shift, and go to state 45
+    LBRACKET  shift, and go to state 46
+
+    expr       go to state 47
+    cond       go to state 48
+    condition  go to state 49
+
+
+State 25
+
+   11 decl: CONST type . assigns
+
+    ID  shift, and go to state 30
+
+    assigns  go to state 50
+    assign   go to state 32
+
+
+State 26
 
     0 $accept: program $end .
 
     $default  accept
 
 
-State 12
+State 27
 
-    3 statements: statements statement .
+    3 stmts: stmts stmt .
 
-    $default  reduce using rule 3 (statements)
-
-
-State 13
-
-    5 statement: declaration SEMICOLON .
-
-    $default  reduce using rule 5 (statement)
+    $default  reduce using rule 3 (stmts)
 
 
-State 14
+State 28
 
-    6 declaration: T IDENTIFIER . LOP_ASSIGN expr
-    7            | T IDENTIFIER .
+    5 stmt: decl SEMICOLON .
 
-    LOP_ASSIGN  shift, and go to state 15
-
-    $default  reduce using rule 7 (declaration)
+    $default  reduce using rule 5 (stmt)
 
 
-State 15
+State 29
 
-    6 declaration: T IDENTIFIER LOP_ASSIGN . expr
+    6 stmt: assign SEMICOLON .
 
-    IDENTIFIER  shift, and go to state 16
-    INTEGER     shift, and go to state 17
-    CHAR        shift, and go to state 18
-    STRING      shift, and go to state 19
-
-    expr  go to state 20
+    $default  reduce using rule 6 (stmt)
 
 
-State 16
+State 30
 
-    8 expr: IDENTIFIER .
+   15 assigns: ID .
+   16 assign: ID . ASS expr
+   17       | ID . ADDASS expr
+   18       | ID . SUBASS expr
+   19       | ID . MULASS expr
+   20       | ID . DIVASS expr
+   21       | ID . REMASS expr
 
-    $default  reduce using rule 8 (expr)
+    ASS     shift, and go to state 17
+    ADDASS  shift, and go to state 18
+    SUBASS  shift, and go to state 19
+    MULASS  shift, and go to state 20
+    DIVASS  shift, and go to state 21
+    REMASS  shift, and go to state 22
 
-
-State 17
-
-    9 expr: INTEGER .
-
-    $default  reduce using rule 9 (expr)
-
-
-State 18
-
-   10 expr: CHAR .
-
-    $default  reduce using rule 10 (expr)
-
-
-State 19
-
-   11 expr: STRING .
-
-    $default  reduce using rule 11 (expr)
+    $default  reduce using rule 15 (assigns)
 
 
-State 20
+State 31
 
-    6 declaration: T IDENTIFIER LOP_ASSIGN expr .
+   10 decl: type assigns .
+   12 assigns: assigns . COMMA assign
+   13        | assigns . COMMA ID
 
-    $default  reduce using rule 6 (declaration)
+    COMMA  shift, and go to state 51
+
+    $default  reduce using rule 10 (decl)
+
+
+State 32
+
+   14 assigns: assign .
+
+    $default  reduce using rule 14 (assigns)
+
+
+State 33
+
+   22 expr: ID .
+
+    $default  reduce using rule 22 (expr)
+
+
+State 34
+
+   23 expr: INTEGER .
+
+    $default  reduce using rule 23 (expr)
+
+
+State 35
+
+   24 expr: VCHAR .
+
+    $default  reduce using rule 24 (expr)
+
+
+State 36
+
+   25 expr: VSTRING .
+
+    $default  reduce using rule 25 (expr)
+
+
+State 37
+
+   31 expr: LBRACKET . expr RBRACKET
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 52
+
+
+State 38
+
+   16 assign: ID ASS expr .
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+
+    A_ADD  shift, and go to state 53
+    A_SUB  shift, and go to state 54
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 16 (assign)
+
+
+State 39
+
+   17 assign: ID ADDASS expr .
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+
+    A_ADD  shift, and go to state 53
+    A_SUB  shift, and go to state 54
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 17 (assign)
+
+
+State 40
+
+   18 assign: ID SUBASS expr .
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+
+    A_ADD  shift, and go to state 53
+    A_SUB  shift, and go to state 54
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 18 (assign)
+
+
+State 41
+
+   19 assign: ID MULASS expr .
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+
+    A_ADD  shift, and go to state 53
+    A_SUB  shift, and go to state 54
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 19 (assign)
+
+
+State 42
+
+   20 assign: ID DIVASS expr .
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+
+    A_ADD  shift, and go to state 53
+    A_SUB  shift, and go to state 54
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 20 (assign)
+
+
+State 43
+
+   21 assign: ID REMASS expr .
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+
+    A_ADD  shift, and go to state 53
+    A_SUB  shift, and go to state 54
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 21 (assign)
+
+
+State 44
+
+    9 block: LBRACE stmts RBRACE .
+
+    $default  reduce using rule 9 (block)
+
+
+State 45
+
+   32 cond: L_NO . condition
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr       go to state 47
+    condition  go to state 58
+
+
+State 46
+
+   31 expr: LBRACKET . expr RBRACKET
+   33 cond: LBRACKET . condition RBRACKET
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr       go to state 59
+    condition  go to state 60
+
+
+State 47
+
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+   36 condition: expr . R_GT expr
+   37          | expr . R_GE expr
+   38          | expr . R_LT expr
+   39          | expr . R_LE expr
+   40          | expr . R_EE expr
+   41          | expr . R_NE expr
+
+    R_EE   shift, and go to state 61
+    R_NE   shift, and go to state 62
+    R_GT   shift, and go to state 63
+    R_GE   shift, and go to state 64
+    R_LT   shift, and go to state 65
+    R_LE   shift, and go to state 66
+    A_ADD  shift, and go to state 53
+    A_SUB  shift, and go to state 54
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+
+State 48
+
+    8 stmt: WHILE LBRACKET cond . RBRACKET stmt
+
+    RBRACKET  shift, and go to state 67
+
+
+State 49
+
+   34 cond: condition . L_AND condition
+   35     | condition . L_OR condition
+
+    L_OR   shift, and go to state 68
+    L_AND  shift, and go to state 69
+
+
+State 50
+
+   11 decl: CONST type assigns .
+   12 assigns: assigns . COMMA assign
+   13        | assigns . COMMA ID
+
+    COMMA  shift, and go to state 51
+
+    $default  reduce using rule 11 (decl)
+
+
+State 51
+
+   12 assigns: assigns COMMA . assign
+   13        | assigns COMMA . ID
+
+    ID  shift, and go to state 70
+
+    assign  go to state 71
+
+
+State 52
+
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+   31     | LBRACKET expr . RBRACKET
+
+    A_ADD     shift, and go to state 53
+    A_SUB     shift, and go to state 54
+    A_MUL     shift, and go to state 55
+    A_DIV     shift, and go to state 56
+    A_REM     shift, and go to state 57
+    RBRACKET  shift, and go to state 72
+
+
+State 53
+
+   26 expr: expr A_ADD . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 73
+
+
+State 54
+
+   27 expr: expr A_SUB . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 74
+
+
+State 55
+
+   28 expr: expr A_MUL . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 75
+
+
+State 56
+
+   29 expr: expr A_DIV . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 76
+
+
+State 57
+
+   30 expr: expr A_REM . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 77
+
+
+State 58
+
+   32 cond: L_NO condition .
+
+    $default  reduce using rule 32 (cond)
+
+
+State 59
+
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+   31     | LBRACKET expr . RBRACKET
+   36 condition: expr . R_GT expr
+   37          | expr . R_GE expr
+   38          | expr . R_LT expr
+   39          | expr . R_LE expr
+   40          | expr . R_EE expr
+   41          | expr . R_NE expr
+
+    R_EE      shift, and go to state 61
+    R_NE      shift, and go to state 62
+    R_GT      shift, and go to state 63
+    R_GE      shift, and go to state 64
+    R_LT      shift, and go to state 65
+    R_LE      shift, and go to state 66
+    A_ADD     shift, and go to state 53
+    A_SUB     shift, and go to state 54
+    A_MUL     shift, and go to state 55
+    A_DIV     shift, and go to state 56
+    A_REM     shift, and go to state 57
+    RBRACKET  shift, and go to state 72
+
+
+State 60
+
+   33 cond: LBRACKET condition . RBRACKET
+
+    RBRACKET  shift, and go to state 78
+
+
+State 61
+
+   40 condition: expr R_EE . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 79
+
+
+State 62
+
+   41 condition: expr R_NE . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 80
+
+
+State 63
+
+   36 condition: expr R_GT . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 81
+
+
+State 64
+
+   37 condition: expr R_GE . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 82
+
+
+State 65
+
+   38 condition: expr R_LT . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 83
+
+
+State 66
+
+   39 condition: expr R_LE . expr
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr  go to state 84
+
+
+State 67
+
+    8 stmt: WHILE LBRACKET cond RBRACKET . stmt
+
+    ID         shift, and go to state 1
+    CHAR       shift, and go to state 2
+    INT        shift, and go to state 3
+    BOOL       shift, and go to state 4
+    STRING     shift, and go to state 5
+    SEMICOLON  shift, and go to state 6
+    LBRACE     shift, and go to state 7
+    WHILE      shift, and go to state 8
+    CONST      shift, and go to state 9
+
+    stmt    go to state 85
+    block   go to state 13
+    decl    go to state 14
+    assign  go to state 15
+    type    go to state 16
+
+
+State 68
+
+   35 cond: condition L_OR . condition
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr       go to state 47
+    condition  go to state 86
+
+
+State 69
+
+   34 cond: condition L_AND . condition
+
+    ID        shift, and go to state 33
+    INTEGER   shift, and go to state 34
+    VCHAR     shift, and go to state 35
+    VSTRING   shift, and go to state 36
+    LBRACKET  shift, and go to state 37
+
+    expr       go to state 47
+    condition  go to state 87
+
+
+State 70
+
+   13 assigns: assigns COMMA ID .
+   16 assign: ID . ASS expr
+   17       | ID . ADDASS expr
+   18       | ID . SUBASS expr
+   19       | ID . MULASS expr
+   20       | ID . DIVASS expr
+   21       | ID . REMASS expr
+
+    ASS     shift, and go to state 17
+    ADDASS  shift, and go to state 18
+    SUBASS  shift, and go to state 19
+    MULASS  shift, and go to state 20
+    DIVASS  shift, and go to state 21
+    REMASS  shift, and go to state 22
+
+    $default  reduce using rule 13 (assigns)
+
+
+State 71
+
+   12 assigns: assigns COMMA assign .
+
+    $default  reduce using rule 12 (assigns)
+
+
+State 72
+
+   31 expr: LBRACKET expr RBRACKET .
+
+    $default  reduce using rule 31 (expr)
+
+
+State 73
+
+   26 expr: expr . A_ADD expr
+   26     | expr A_ADD expr .
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 26 (expr)
+
+
+State 74
+
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   27     | expr A_SUB expr .
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 27 (expr)
+
+
+State 75
+
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   28     | expr A_MUL expr .
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+
+    $default  reduce using rule 28 (expr)
+
+
+State 76
+
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   29     | expr A_DIV expr .
+   30     | expr . A_REM expr
+
+    $default  reduce using rule 29 (expr)
+
+
+State 77
+
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+   30     | expr A_REM expr .
+
+    $default  reduce using rule 30 (expr)
+
+
+State 78
+
+   33 cond: LBRACKET condition RBRACKET .
+
+    $default  reduce using rule 33 (cond)
+
+
+State 79
+
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+   40 condition: expr R_EE expr .
+
+    A_ADD  shift, and go to state 53
+    A_SUB  shift, and go to state 54
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 40 (condition)
+
+
+State 80
+
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+   41 condition: expr R_NE expr .
+
+    A_ADD  shift, and go to state 53
+    A_SUB  shift, and go to state 54
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 41 (condition)
+
+
+State 81
+
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+   36 condition: expr R_GT expr .
+
+    A_ADD  shift, and go to state 53
+    A_SUB  shift, and go to state 54
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 36 (condition)
+
+
+State 82
+
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+   37 condition: expr R_GE expr .
+
+    A_ADD  shift, and go to state 53
+    A_SUB  shift, and go to state 54
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 37 (condition)
+
+
+State 83
+
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+   38 condition: expr R_LT expr .
+
+    A_ADD  shift, and go to state 53
+    A_SUB  shift, and go to state 54
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 38 (condition)
+
+
+State 84
+
+   26 expr: expr . A_ADD expr
+   27     | expr . A_SUB expr
+   28     | expr . A_MUL expr
+   29     | expr . A_DIV expr
+   30     | expr . A_REM expr
+   39 condition: expr R_LE expr .
+
+    A_ADD  shift, and go to state 53
+    A_SUB  shift, and go to state 54
+    A_MUL  shift, and go to state 55
+    A_DIV  shift, and go to state 56
+    A_REM  shift, and go to state 57
+
+    $default  reduce using rule 39 (condition)
+
+
+State 85
+
+    8 stmt: WHILE LBRACKET cond RBRACKET stmt .
+
+    $default  reduce using rule 8 (stmt)
+
+
+State 86
+
+   35 cond: condition L_OR condition .
+
+    $default  reduce using rule 35 (cond)
+
+
+State 87
+
+   34 cond: condition L_AND condition .
+
+    $default  reduce using rule 34 (cond)
