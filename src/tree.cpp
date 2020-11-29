@@ -54,7 +54,7 @@ void TreeNode::printNodeInfo() {
 		if(this->type->type==TYPE_CHAR->type)
 		cout<<"   type:char"<<"   value:'"<<this->ch_val<<"'";
 		if(this->type->type==TYPE_STRING->type)
-		cout<<"   type:string"<<"   value:\""<<this->str_val<<"\"";
+		cout<<"   type:string"<<"   value:"<<this->str_val;
 	}
 	if(this->nodeType==NODE_CONST){
 		if(this->type->type==TYPE_INT->type)
@@ -62,7 +62,7 @@ void TreeNode::printNodeInfo() {
 		if(this->type->type==TYPE_CHAR->type)
 		cout<<"   type:char"<<"   value:'"<<this->ch_val<<"'";
 		if(this->type->type==TYPE_STRING->type)
-		cout<<"   type:string"<<"   value:\""<<this->str_val<<"\"";
+		cout<<"   type:string"<<"   value:"<<this->str_val;
 	}
 }
 
@@ -111,6 +111,8 @@ string TreeNode::nodeType2String (NodeType type){
         case(NODE_PROG):return "program";
 	case(NODE_ASSIGN):return "assign";
 	case(NODE_COND):return "condition";
+	case(NODE_BLOCK):return "block";
+
         default:return"?";
     }
 }

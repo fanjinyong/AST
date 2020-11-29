@@ -1,6 +1,90 @@
-  0  0  program   children: 1
-  1  1  stmt_decl_val   children: 2 3
-  2  1  type_char
-  3  1  assign_ass   children: 4 5
-  4  1  variable    scope:0   name:c   type:char   value:'s'
-  5  1  const   type:char   value:'s'
+  0  0  program   children: 1 5 9 13 18 21 24
+  1  3  stmt_decl_val   children: 2 3 4
+  2  3  type_int
+  3  3  variable    scope:1   name:a   type:int   value:0
+  4  3  variable    scope:1   name:s   type:int   value:0
+  5  4  stmt_assign   children: 6
+  6  4  assign_ass   children: 7 8
+  7  4  variable    scope:1   name:a   type:int   value:16
+  8  4  const   type:int   value:16
+  9  4  stmt_assign   children: 10
+ 10  4  assign_ass   children: 11 12
+ 11  4  variable    scope:1   name:s   type:int   value:0
+ 12  4  const   type:int   value:0
+ 13  5  stmt_decl_const   children: 14 15
+ 14  5  type_int
+ 15  5  assign_ass   children: 16 17
+ 16  5  variable    scope:1   name:h   type:int   value:5
+ 17  5  const   type:int   value:5
+ 18  6  stmt_decl_val   children: 19 20
+ 19  6  type_char
+ 20  6  variable    scope:1   name:ch   type:int   value:0
+ 21  7  stmt_scan   children: 22 23
+ 22  7  const   type:string   value:"\%d"
+ 23  7  variable    scope:1   name:ch   type:int   value:0
+ 24  8  stmt_while   children: 25 43
+ 25  8  condition_L_or   children: 26 33
+ 26  8  condition_L_and   children: 27 30
+ 27  8  condition_R_gt   children: 28 29
+ 28  8  variable    scope:1   name:a   type:int   value:16
+ 29  8  const   type:int   value:0
+ 30  8  condition_R_le   children: 31 32
+ 31  8  variable    scope:1   name:a   type:int   value:16
+ 32  8  const   type:int   value:10
+ 33  8  condition_L_and   children: 34 39
+ 34  8  condition_R_ee   children: 35 38
+ 35  8  expression_rem   children: 36 37
+ 36  8  variable    scope:1   name:a   type:int   value:16
+ 37  8  const   type:int   value:100
+ 38  8  const   type:int   value:10
+ 39  8  condition_L_no   children: 40
+ 40  8  condition_R_ee   children: 41 42
+ 41  8  variable    scope:1   name:a   type:int   value:16
+ 42  8  const   type:int   value:10
+ 43  9  block   children: 44 48 51 55 59
+ 44  9  stmt_assign   children: 45
+ 45  9  assign_subass   children: 46 47
+ 46  9  variable    scope:1   name:a   type:int   value:15
+ 47  9  const   type:int   value:1
+ 48 10  stmt_decl_val   children: 49 50
+ 49 10  type_int
+ 50 10  variable    scope:1   name:a   type:int   value:15
+ 51 11  stmt_assign   children: 52
+ 52 11  assign_ass   children: 53 54
+ 53 11  variable    scope:1   name:a   type:int   value:10
+ 54 11  const   type:int   value:10
+ 55 11  stmt_assign   children: 56
+ 56 11  assign_addass   children: 57 58
+ 57 11  variable    scope:1   name:s   type:int   value:10
+ 58 11  variable    scope:1   name:a   type:int   value:10
+ 59 12  stmt_if   children: 60 63
+ 60 12  condition_R_lt   children: 61 62
+ 61 12  variable    scope:1   name:s   type:int   value:10
+ 62 12  const   type:int   value:-10
+ 63 13  block   children: 64 67 70 74
+ 64 13  stmt_print   children: 65 66
+ 65 13  const   type:string   value:"result is: %d\n"
+ 66 13  variable    scope:1   name:s   type:int   value:10
+ 67 14  stmt_decl_val   children: 68 69
+ 68 14  type_int
+ 69 14  variable    scope:3   name:b   type:int   value:0
+ 70 15  stmt_assign   children: 71
+ 71 15  assign_ass   children: 72 73
+ 72 15  variable    scope:3   name:b   type:int   value:10
+ 73 15  const   type:int   value:10
+ 74 16  stmt_for   children: 75 80 83 86
+ 75 16  stmt_decl_val   children: 76 77
+ 76 16  type_int
+ 77 16  assign_ass   children: 78 79
+ 78 16  variable    scope:3   name:i   type:int   value:0
+ 79 16  const   type:int   value:0
+ 80 16  condition_R_lt   children: 81 82
+ 81 16  variable    scope:3   name:i   type:int   value:0
+ 82 16  variable    scope:3   name:b   type:int   value:10
+ 83 16  stmt_for3   children: 84
+ 84 16  assign_addadd   children: 85
+ 85 16  variable    scope:3   name:i   type:int   value:1
+ 86 17  block   children: 87
+ 87 17  stmt_print   children: 88 89
+ 88 17  const   type:string   value:"Have fun: %d\n"
+ 89 17  variable    scope:3   name:i   type:int   value:1

@@ -103,6 +103,13 @@ ID [[:alpha:]_][[:alpha:][:digit:]_]*
 "for" return FOR;
 "const" return CONST;
 
+"void" return VOID;
+"main" return MAIN;
+"printf" return PRINT;
+"scanf" return SCAN;
+"&" return SP;
+
+
 
 "*" return A_MUL;
 "/" return A_DIV;
@@ -131,10 +138,12 @@ ID [[:alpha:]_][[:alpha:][:digit:]_]*
 "%=" return REMASS;
 
 ";" return SEMICOLON;
-"{" {scope++;stree=stree->addScopeL(scope);return LBRACE;}
-"}" {stree=stree->addScopeR();return RBRACE;}
+"{" {stree=stree->addScopeL(++scope);
+return LBRACE;}
+"}" {stree=stree->addScopeR();
+return RBRACE;}
 "(" return LBRACKET;
-")" return LBRACKET;
+")" return RBRACKET;
 "," return COMMA;
 "." return POINT;
 
@@ -167,7 +176,7 @@ ID [[:alpha:]_][[:alpha:][:digit:]_]*
 	stree->addVal(string(yytext));
     TreeNode* node = new TreeNode(lineno, NODE_VAR);
     node->var_name = string(yytext);
-    node->scope=stree->findScope(string(yytext));
+   node->scope=stree->findScope(string(yytext));
 	node->type = TYPE_INT;
 if(m.count(make_pair(string(yytext),node->scope)))
 		node->int_val=m[make_pair(string(yytext),node->scope)];

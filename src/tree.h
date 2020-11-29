@@ -80,10 +80,12 @@ public:
 		NodeScope* temp=this;
 		do{
 			if(temp->m.count(val)){
+			if(temp!=this)
 			this->m.insert(pair<string,int>(val,temp->m[val]));
 			return;			
 			}
-		}while(temp->parent!=nullptr);
+			temp=temp->parent;
+		}while(temp!=nullptr);
 		if(this->m.count(val)==0)
 			this->m.insert(pair<string,int>(val,this->scope));
 	}

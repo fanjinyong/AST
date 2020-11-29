@@ -7,8 +7,9 @@
     int yyerror( char const * );
     extern map<pair<string,int>,int> m;
 %}
-%token ID CHAR INT BOOL STRING INTEGER  VCHAR VSTRING
-%token COMMA SEMICOLON LBRACE RBRACE
+
+%token COMMA SEMICOLON 
+%token LBRACE RBRACE
 %left ASS ADDASS SUBASS MULASS DIVASS REMASS
 %token L_OR
 %token L_AND
@@ -18,12 +19,12 @@
 %left A_MUL A_DIV A_REM
 %right ADDADD SUBSUB L_NO
 %token LBRACKET RBRACKET POINT
-%token WHILE BREAK RETURN CONTINUE IF ELSE FOR CONST
-
+%token WHILE BREAK RETURN CONTINUE IF ELSE FOR CONST VOID MAIN SCAN PRINT
+%token ID CHAR INT BOOL STRING INTEGER  VCHAR VSTRING SP
 %%
 
 program//
-: stmts {root = new TreeNode(0, NODE_PROG); root->addChild($1);};
+: VOID MAIN LBRACKET RBRACKET LBRACE stmts RBRACE{root = new TreeNode(0, NODE_PROG); root->addChild($6);};
 
 stmts//
 :  stmt {$$=$1;}
@@ -31,31 +32,59 @@ stmts//
 ;
 
 stmt
-: SEMICOLON  {$$ = new TreeNode(lineno, NODE_STMT); $$->sp = "skip";}
+: LBRACE SEMICOLON  {$$ = new TreeNode(lineno, NODE_STMT); $$->sp = "skip";}
 | decl SEMICOLON {$$=$1;}
 | assign SEMICOLON
 {$$=new TreeNode(lineno, NODE_STMT);$$->sp="assign"; $$->addChild($1);}
-| block{$$ = new TreeNode(lineno, NODE_BLOCK); $$->sp = "block";}
+| LBRACE stmts RBRACE{$$=new TreeNode($2->lineno, NODE_BLOCK); $$->addChild($2);}
 | WHILE LBRACKET cond RBRACKET stmt {
-	$$ = new TreeNode(lineno, NODE_STMT); $$->sp = "while";
+	$$ = new TreeNode($3->lineno, NODE_STMT); $$->sp = "while";
 	$$->addChild($3);$$->addChild($5);	
 	}
-/*| IF LBRACKET cond RBRACKET stmt {
-	$$ = new TreeNode(lineno, NODE_STMT); $$->sp = "if";
+| IF LBRACKET cond RBRACKET stmt {
+	$$ = new TreeNode($3->lineno, NODE_STMT); $$->sp = "if";
 	$$->addChild($3);$$->addChild($5);
 	}
 /*
 | BREAK SEMICOLON {$$ = new TreeNode(lineno, NODE_STMT);$$->sp="break";}
 | CONTINUE SEMICOLON {$$ = new TreeNode(lineno, NODE_STMT);$$->sp="continue";}
-| FOR LBRACKET stmt SEMICOLON cond SEMICOLON stmt RBRACKET stmt {
-	$$ = new TreeNode(lineno, NODE_STMT); $$->sp = "for";
-	$$->addChild($3);$$->addChild($5);	
-	$$->addChild($7);$$->addChild($9);	
-	}*/
+*/
+| FOR LBRACKET stmt cond SEMICOLON for3 RBRACKET stmt {
+	$$ = new TreeNode($3->lineno, NODE_STMT); $$->sp = "for";
+	$$->addChild($3);
+	$$->addChild($4);
+	$$->addChild($6);
+$$->addChild($8);
+//$$->addChild($5);	$$->addChild($7);$$->addChild($9);	
+	}
+| RETURN expr SEMICOLON {
+	$$ = new TreeNode(lineno, NODE_STMT); 
+	$$->sp = "return";
+	$$->addChild($2);
+	}
+| RETURN SEMICOLON {$$ = new TreeNode(lineno, NODE_STMT); $$->sp = "return";}
+| PRINT LBRACKET ids RBRACKET SEMICOLON{
+	$$ = new TreeNode(lineno, NODE_STMT); 
+	$$->sp = "print";
+	$$->addChild($3);
+	}
+| SCAN LBRACKET ids RBRACKET SEMICOLON{
+$$ = new TreeNode(lineno, NODE_STMT); 
+	$$->sp = "scan";
+	$$->addChild($3);
+}
 ;
 
-block//
-: LBRACE stmts RBRACE {$$->addChild($2);}
+ids
+: ids COMMA expr {$$=$1;$$->addSibling($3);}
+| expr {$$=$1;}
+| ids COMMA SP expr {$$=$1;$$->addSibling($4);}
+;
+
+for3//
+: assigns{$$ = new TreeNode(lineno, NODE_STMT); $$->sp="for3"; 
+	$$->addChild($1);}
+
 ;
 
 decl//
@@ -89,7 +118,7 @@ assign
 	$$=node;}
 |ID ADDASS expr{
 	TreeNode* node = new TreeNode(lineno, NODE_ASSIGN);
-	node->sp="ass";
+	node->sp="addass";
 	$1->type=$3->type;
 	$1->int_val+=$3->int_val;
 	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
@@ -97,7 +126,7 @@ assign
 	$$=node;}
 |ID SUBASS expr{
 	TreeNode* node = new TreeNode(lineno, NODE_ASSIGN);
-	node->sp="ass";
+	node->sp="subass";
 	$1->type=$3->type;
 	$1->int_val-=$3->int_val;
 	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
@@ -105,7 +134,7 @@ assign
 	$$=node;}
 |ID MULASS expr{
 	TreeNode* node = new TreeNode(lineno, NODE_ASSIGN);
-	node->sp="ass";
+	node->sp="mulass";
 	$1->type=$3->type;
 	$1->int_val*=$3->int_val;
 	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
@@ -113,7 +142,7 @@ assign
 	$$=node;}
 |ID DIVASS expr{
 	TreeNode* node = new TreeNode(lineno, NODE_ASSIGN);
-	node->sp="ass";
+	node->sp="divass";
 	$1->type=$3->type;
 	$1->int_val/=$3->int_val;
 	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
@@ -121,11 +150,27 @@ assign
 	$$=node;}
 |ID REMASS expr{
 	TreeNode* node = new TreeNode(lineno, NODE_ASSIGN);
-	node->sp="ass";
+	node->sp="remass";
 	$1->type=$3->type;
 	$1->int_val%=$3->int_val;
 	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
 	node->addChild($1);node->addChild($3);
+	$$=node;}
+|ID ADDADD{
+	TreeNode* node = new TreeNode(lineno, NODE_ASSIGN);
+	node->sp="addadd";
+	$1->type=TYPE_INT;
+	$1->int_val++;
+	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
+	node->addChild($1);
+	$$=node;}
+|ID SUBSUB{
+	TreeNode* node = new TreeNode(lineno, NODE_ASSIGN);
+	node->sp="subsub";
+	$1->type=TYPE_INT;
+	$1->int_val++;
+	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
+	node->addChild($1);
 	$$=node;}
 ;
 
@@ -163,18 +208,68 @@ expr
 ;
 
 cond
-: L_NO cond {}
-| expr {}
-| LBRACKET cond RBRACKET {}
-| cond L_AND cond {}
-| cond L_OR cond {}
-| cond R_GT expr {}
-| cond R_GE expr {}
-| cond R_LT expr {}
-| cond R_LE expr {}
-| cond R_EE expr {}
-| cond R_NE expr {}
+: condand L_OR condand{
+	$$=new TreeNode(lineno, NODE_COND);
+	$$->sp="L_or";
+	$$->addChild($1);
+	$$->addChild($3);
+	} 
+|condand{$$=$1;};
+
+
+condand
+: condno L_AND condno {
+	$$=new TreeNode(lineno, NODE_COND);
+	$$->sp="L_and";
+	$$->addChild($1);
+	$$->addChild($3);
+	} 
+| condno {$$=$1;}
 ;
+
+condno
+: L_NO condition {
+	$$=new TreeNode(lineno, NODE_COND);
+	$$->sp="L_no";
+	$$->addChild($2);
+	} 
+| condition {$$=$1;}
+;
+
+
+condition
+: expr R_GT expr {
+	$$=new TreeNode(lineno, NODE_COND);
+	$$->sp="R_gt";
+	$$->addChild($1);$$->addChild($3);
+	}
+| expr R_GE expr {
+	$$=new TreeNode(lineno, NODE_COND);
+	$$->sp="R_ge";
+	$$->addChild($1);$$->addChild($3);	
+	}
+| expr R_LT expr {
+	$$=new TreeNode(lineno, NODE_COND);
+	$$->sp="R_lt";
+	$$->addChild($1);$$->addChild($3);	
+	}
+| expr R_LE expr {
+	$$=new TreeNode(lineno, NODE_COND);
+	$$->sp="R_le";
+	$$->addChild($1);$$->addChild($3);	
+	}
+| expr R_EE expr {
+	$$=new TreeNode(lineno, NODE_COND);
+	$$->sp="R_ee";
+	$$->addChild($1);$$->addChild($3);}	
+| expr R_NE expr {
+	$$=new TreeNode(lineno, NODE_COND);
+	$$->sp="R_ne";
+	$$->addChild($1);$$->addChild($3);	
+	}
+| LBRACKET cond RBRACKET {$$=$1;}
+;
+
 
 type: INT {$$ = new TreeNode(lineno, NODE_TYPE); 
 	$$->type = TYPE_INT;$$->sp="int";} 
