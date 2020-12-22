@@ -59,15 +59,17 @@ struct NodeScope{
 public:
 	NodeScope*parent=nullptr;
 	int scope;
-	map<string,int> m;
+	map<string,int> mapInt;
+	map<string,int> mapChar;
 	
-
 	NodeScope(int scope){
 		this->scope=scope;	
 	}
 
 	NodeScope* addScopeL(int s){
 		NodeScope* node=new NodeScope(s);
+		node->mapInt=this->mapInt;
+		node->mapChar=this->mapChar;
 		node->parent=this;
 		return node;		
 	}
@@ -76,23 +78,27 @@ public:
 		return this->parent;		
 	}
 
-	void addVal(string val){
-		NodeScope* temp=this;
-		do{
-			if(temp->m.count(val)){
-			if(temp!=this)
-			this->m.insert(pair<string,int>(val,temp->m[val]));
-			return;			
-			}
-			temp=temp->parent;
-		}while(temp!=nullptr);
-		if(this->m.count(val)==0)
-			this->m.insert(pair<string,int>(val,this->scope));
+	void addDel(string del,int flag){
+		if(flag==1){
+		if(this->mapChar.count(del)==0)
+		this->mapChar.insert(pair<string,int>(del,this->scope));
+		else
+		mapChar[del]=this->scope;
+		}
+		else{
+		if(this->mapInt.count(del)==0)
+		this->mapInt.insert(pair<string,int>(del,this->scope));
+		else
+		mapInt[del]=this->scope;
+		}
 	}
 
-
 	int findScope(string val){
-		return this->m[val];
+		if(this->mapChar.count(val)!=0)
+		return this->mapChar[val];
+		if(this->mapInt.count(val)!=0)
+		return this->mapInt[val];
+		return -1;
 	}
 };
 

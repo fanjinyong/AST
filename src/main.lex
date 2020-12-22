@@ -4,28 +4,19 @@
 #include "main.tab.h"  // yacc header
 int lineno=1;
 int scope=0;
+int scopeFlag=0;
 NodeScope* stree=new NodeScope(0);
-map<pair<string,int>,int> m;
 int char2Int(char* yyt){
 	int i=0;
 	int fu=0;
 	int hex;
 	int num=0;
 
-	if(yyt[i]=='-'){
-	    fu=1;
-	    i++;
-	}
-	if(yyt[i]=='+'){
-	    fu=0;
-	    i++;
-	}
+	if(yyt[i]=='-'){fu=1;i++;}
+	if(yyt[i]=='+'){fu=0;i++;}
 	if(yyt[i]=='0'){
 	    i++;
-	    if(yyt[i]=='x'||yyt[i]=='X'){
-		i++;
-		hex=16;
-	    }
+	    if(yyt[i]=='x'||yyt[i]=='X'){i++;hex=16;}
 	    else
 	    hex=8;
 	}
@@ -44,32 +35,32 @@ int char2Int(char* yyt){
 	case '6':
 	case '7':
 	case '8':
-	case '9':
-	{num=num*hex+(yyt[i]-'0');break;}
+	case '9':{num=num*hex+(yyt[i]-'0');break;}
+
 	case 'a':
-	case 'A':
-	{num=num*hex+10;break;}
+	case 'A':{num=num*hex+10;break;}
+
 	case 'b':
-	case 'B':
-	{num=num*hex+11;break;}
+	case 'B':{num=num*hex+11;break;}
+
 	case 'c':
-	case 'C':
-	{num=num*hex+12;break;}
+	case 'C':{num=num*hex+12;break;}
+
 	case 'd':
-	case 'D':
-	{num=num*hex+13;break;}
+	case 'D':{num=num*hex+13;break;}
+
 	case 'e':
-	case 'E':
-	{num=num*hex+14;break;}
+	case 'E':{num=num*hex+14;break;}
+
 	case 'f':
-	case 'F':
-	{num=num*hex+15;break;}
+	case 'F':{num=num*hex+15;break;}
 	}
 	i++;
 	}
 
 	if(fu)
 	num=0-num;
+
 	return num;
 }
 %}
@@ -91,8 +82,8 @@ ID [[:alpha:]_][[:alpha:][:digit:]_]*
 {LINECOMMENT}  /* do nothing */
 
 
-"int" return INT;
-"char" return CHAR;
+"int" {scopeFlag+=2;return INT;}
+"char" {scopeFlag+=1;return CHAR;}
 "string" return STRING;
 "continue" return CONTINUE;
 "if" return IF;
@@ -100,7 +91,7 @@ ID [[:alpha:]_][[:alpha:][:digit:]_]*
 "while" return WHILE;
 "break" return BREAK;
 "return" return RETURN;
-"for" return FOR;
+"for" {scopeFlag=3;stree=stree->addScopeL(++scope);return FOR;}
 "const" return CONST;
 
 "void" return VOID;
@@ -137,13 +128,17 @@ ID [[:alpha:]_][[:alpha:][:digit:]_]*
 "/=" return DIVASS;
 "%=" return REMASS;
 
-";" return SEMICOLON;
+";" {scopeFlag=0;return SEMICOLON;}
 "{" {stree=stree->addScopeL(++scope);
 return LBRACE;}
 "}" {stree=stree->addScopeR();
 return RBRACE;}
 "(" return LBRACKET;
-")" return RBRACKET;
+")" {if (scopeFlag>=3){
+	scopeFlag=0;
+	stree=stree->addScopeR();
+	}
+	return RBRACKET;}
 "," return COMMA;
 "." return POINT;
 
@@ -173,15 +168,15 @@ return RBRACE;}
 }
 
 {ID} {
-	stree->addVal(string(yytext));
-    TreeNode* node = new TreeNode(lineno, NODE_VAR);
-    node->var_name = string(yytext);
-   node->scope=stree->findScope(string(yytext));
+	if(scopeFlag==1||scopeFlag==2||scopeFlag==4||scopeFlag==5){
+		if(scopeFlag>=4)
+			scopeFlag-=2;
+		stree->addDel(string(yytext),scopeFlag);
+	}
+	TreeNode* node = new TreeNode(lineno, NODE_VAR);
+	node->var_name = string(yytext);
+	node->scope=stree->findScope(string(yytext));
 	node->type = TYPE_INT;
-if(m.count(make_pair(string(yytext),node->scope)))
-		node->int_val=m[make_pair(string(yytext),node->scope)];
-	else
-		m.insert(make_pair(make_pair(string(yytext),node->scope),0));
     yylval = node;
     return ID;
 }

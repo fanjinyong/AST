@@ -5,7 +5,6 @@
     extern int lineno;
     int yylex();
     int yyerror( char const * );
-    extern map<pair<string,int>,int> m;
 %}
 
 %token COMMA SEMICOLON 
@@ -45,17 +44,13 @@ stmt
 	$$ = new TreeNode($3->lineno, NODE_STMT); $$->sp = "if";
 	$$->addChild($3);$$->addChild($5);
 	}
-/*
-| BREAK SEMICOLON {$$ = new TreeNode(lineno, NODE_STMT);$$->sp="break";}
-| CONTINUE SEMICOLON {$$ = new TreeNode(lineno, NODE_STMT);$$->sp="continue";}
-*/
 | FOR LBRACKET stmt cond SEMICOLON for3 RBRACKET stmt {
 	$$ = new TreeNode($3->lineno, NODE_STMT); $$->sp = "for";
 	$$->addChild($3);
 	$$->addChild($4);
 	$$->addChild($6);
 $$->addChild($8);
-//$$->addChild($5);	$$->addChild($7);$$->addChild($9);	
+	
 	}
 | RETURN expr SEMICOLON {
 	$$ = new TreeNode(lineno, NODE_STMT); 
@@ -113,7 +108,6 @@ assign
 	$1->ch_val=$3->ch_val;
 	$1->int_val=$3->int_val;
 	$1->str_val=$3->str_val;
-	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
 	node->addChild($1);node->addChild($3);
 	$$=node;}
 |ID ADDASS expr{
@@ -121,7 +115,6 @@ assign
 	node->sp="addass";
 	$1->type=$3->type;
 	$1->int_val+=$3->int_val;
-	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
 	node->addChild($1);node->addChild($3);
 	$$=node;}
 |ID SUBASS expr{
@@ -129,7 +122,6 @@ assign
 	node->sp="subass";
 	$1->type=$3->type;
 	$1->int_val-=$3->int_val;
-	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
 	node->addChild($1);node->addChild($3);
 	$$=node;}
 |ID MULASS expr{
@@ -137,7 +129,6 @@ assign
 	node->sp="mulass";
 	$1->type=$3->type;
 	$1->int_val*=$3->int_val;
-	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
 	node->addChild($1);node->addChild($3);
 	$$=node;}
 |ID DIVASS expr{
@@ -145,7 +136,6 @@ assign
 	node->sp="divass";
 	$1->type=$3->type;
 	$1->int_val/=$3->int_val;
-	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
 	node->addChild($1);node->addChild($3);
 	$$=node;}
 |ID REMASS expr{
@@ -153,7 +143,6 @@ assign
 	node->sp="remass";
 	$1->type=$3->type;
 	$1->int_val%=$3->int_val;
-	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
 	node->addChild($1);node->addChild($3);
 	$$=node;}
 |ID ADDADD{
@@ -161,7 +150,6 @@ assign
 	node->sp="addadd";
 	$1->type=TYPE_INT;
 	$1->int_val++;
-	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
 	node->addChild($1);
 	$$=node;}
 |ID SUBSUB{
@@ -169,7 +157,6 @@ assign
 	node->sp="subsub";
 	$1->type=TYPE_INT;
 	$1->int_val++;
-	m[make_pair($1->var_name,$1->scope)]=$1->int_val;
 	node->addChild($1);
 	$$=node;}
 ;
@@ -182,17 +169,14 @@ expr
 | expr A_ADD expr {
 	$$ = new TreeNode(lineno, NODE_EXPR); 
 	$$->type = TYPE_INT;$$->sp="add";
-	$$->int_val=$1->int_val+$3->int_val;
 	$$->addChild($1);$$->addChild($3);}
 | expr A_SUB expr {
 	$$ = new TreeNode(lineno, NODE_EXPR); 
 	$$->type = TYPE_INT;$$->sp="sub";
-	$$->int_val=$1->int_val-$3->int_val;
 	$$->addChild($1);$$->addChild($3);}
 | expr A_MUL expr {
 	$$ = new TreeNode(lineno, NODE_EXPR); 
 	$$->type = TYPE_INT;$$->sp="mul";
-	$$->int_val=$1->int_val*$3->int_val;
 	$$->addChild($1);$$->addChild($3);}
 | expr A_DIV expr {
 	$$ = new TreeNode(lineno, NODE_EXPR); 
@@ -202,7 +186,6 @@ expr
 | expr A_REM expr {
 	$$ = new TreeNode(lineno, NODE_EXPR); 
 	$$->type = TYPE_INT;$$->sp="rem";
-	$$->int_val=$1->int_val%$3->int_val;
 	$$->addChild($1);$$->addChild($3);}
 | LBRACKET expr RBRACKET {$$=$2;}
 ;

@@ -49,12 +49,6 @@ void TreeNode::printNodeInfo() {
 	if(this->scope!=-1){
 		cout<<setw(10)<<"scope:"<<this->scope;
 		cout<<"   name:"<<this->var_name;
-		if(this->type->type==TYPE_INT->type)
-		cout<<"   type:int"<<"   value:"<<this->int_val;
-		if(this->type->type==TYPE_CHAR->type)
-		cout<<"   type:char"<<"   value:'"<<this->ch_val<<"'";
-		if(this->type->type==TYPE_STRING->type)
-		cout<<"   type:string"<<"   value:"<<this->str_val;
 	}
 	if(this->nodeType==NODE_CONST){
 		if(this->type->type==TYPE_INT->type)
